@@ -282,10 +282,13 @@ def run_game(agent, env_name):
     total_rewards = 0
     while not done:     
         action = agent.act(state)
-        list_before.append(state.tolist() + [total_rewards, action])
-        state, reward, done, _ = env.step(action)   
+        state_list = state.tolist()
+        list_before.append(state_list[0:6] + [total_rewards, action])
+        state, reward, done, _ = env.step(action)  
+        state_list = state.tolist() 
         total_rewards += reward
-        list_after.append(state.tolist() + [total_rewards, action])
+        # print(state)
+        list_after.append(state_list[0:6] + [total_rewards, action])
     print("finsihed")     
     env.close()
     return np.array(list_before), np.array(list_after)
@@ -322,10 +325,36 @@ from ges_algorithm import fit_bic
 from utils import is_dag
 
 agent = Agent(state_size=8, action_size=4, seed=0)
-get_game_CPDAG(9)
+# CPDAG, action_matrix, score = get_game_CPDAG(9)
+# print(CPDAG)
 # list_before, list_after = run_game(agent, 'LunarLander-v2')
 # print(list_before)
 # print(list_after)
 
 
 
+from DAG_maker import combine_CPDAG
+
+size = 7
+CPDAG_combiner = combine_CPDAG(size)
+CPDAG_combiner2 = combine_CPDAG(size)
+
+cnt = 0 
+while cnt < 100:
+    print(cnt)
+    CPDAG, action_matrix, score = get_game_CPDAG(size)
+    if not all(action_matrix[CPDAG > 0] > 0):
+        print('------------awwwwwwww------------')
+        print(CPDAG)
+        print(action_matrix)
+        continue
+    cnt+=1
+    CPDAG_combiner.add_CPDAG(CPDAG, action_matrix, score)
+    CPDAG_combiner2.add_CPDAG(CPDAG, action_matrix, score, include_undirected=False)
+    
+a,_,g1 = CPDAG_combiner.combine()    
+b,_,g2 = CPDAG_combiner2.combine()    
+
+print("Final", np.all(a==b))
+print(g1)
+print(g2)
