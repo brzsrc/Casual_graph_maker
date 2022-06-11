@@ -1,0 +1,8 @@
+numpy
+scipy
+torch
+opencv-python
+tensorboardx
+pandas
+gym[all]
+box2d-py
