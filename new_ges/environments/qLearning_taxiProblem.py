@@ -7,8 +7,6 @@
 # - `OpenAI Gym` for our Taxi Environment
 # - `Random` to generate random numbers
 
-from pydoc import locate
-from turtle import st
 import numpy as np
 import gym
 import random
@@ -18,7 +16,8 @@ import random
 # - OpenAI Gym is a library <b> composed of many environments that we can use to train our agents.</b>
 
 env = gym.make("Taxi-v3")
-env.render()
+# env.reset()
+# env.render()
 
 # ## Step 2: Create the Q-table and initialize it 
 # - Now, we'll create our Q-table, to know how much rows (states) and columns (actions) we need, we need to calculate the action_size and the state_size
@@ -185,9 +184,10 @@ while cnt < 100:
     CPDAG_combiner.add_CPDAG(CPDAG, action_matrix, score)
     CPDAG_combiner2.add_CPDAG(CPDAG, action_matrix, score, include_undirected=False)
     
-a,_,g1 = CPDAG_combiner.combine()    
-b,_,g2 = CPDAG_combiner2.combine()    
+graph1,action1,score1 = CPDAG_combiner.combine()    
+graph2,action2,score2 = CPDAG_combiner2.combine()    
 
-print("Final", np.all(a==b))
-print(g1)
-print(g2)
+print("Final", np.all(graph1==graph2))
+print(graph1,action1,score1)
+print("---------------------------")
+print(graph1,action1,score1)

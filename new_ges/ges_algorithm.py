@@ -231,6 +231,7 @@ def fit(data_dir, completion_algorithm=None, A0=None, B0=None, size=0, phases=['
     # print(B)
     clean_action_matrix(A, B, size)
     B = A * B
+    # print("-------------after clean-------------")
     # print(B)
     return A, B, total_score
 
@@ -271,60 +272,12 @@ def forward_step(A, B, data_dir, debug=0):
     valid_operators = []
     print("  %d candidate edges" % len(edge_candidates)) if debug > 1 else None
 
-    for i,(x, y) in enumerate(edge_candidates):
-        # print(f'--------------------------- edge candidate {i+1}/{len(edge_candidates)} ------------------')
+    for x, y in edge_candidates:
         operators = []
-        # enumerate(filter(lambda x: not A[x],edge_candidates))
         for action, data in data_dir.items():
-            deleted_indices = [i for i in range(data.shape[1]) if np.all(data[:, i]==data[0][i])]
-            
             #---------------------problem needed to be fixed here---------------------------------------
-            if not deleted_indices:
-                # print("A", A)
-                # print("A[x, y]", A[x,y])
-                if(A[x,y] == 0 and A[y,x] == 0):
-                    operators += score_valid_insert_operators(x, y, A, B, action, GaussObsL0Pen(data), debug=max(0, debug - 1))
-                # operators += score_valid_insert_operators(x, y, A, B, action, GaussObsL0Pen(data), debug=max(0, debug - 1))
-                continue
-
-            # data_ = np.delete(data,deleted_indices,axis=1)
-            # cache = GaussObsL0Pen(data_)
-            # A_ = np.delete(A, deleted_indices, axis=1)
-            # A_ = np.delete(A_, deleted_indices, axis=0)
-            # B_ = np.delete(B, deleted_indices, axis=1)
-            # B_ = np.delete(B_, deleted_indices, axis=0)
-            # if x in deleted_indices or y in deleted_indices:
-            #     break
-            
-            # y = y - len([i for i in deleted_indices if i<y])
-            # x = x - len([i for i in deleted_indices if i<x])
-            # inserted_operators = score_valid_insert_operators(x, y, A_, B_, action, cache, debug=max(0, debug - 1))
-
-            # print("------------- for loop action  -------------------")
-            # print(f"edge candidate : {(x,y)}")
-            # print(A)
-            # print(f"deleted indices {deleted_indices}")
-            # print(f"A sh: {A.shape} A_:{A_.shape}")
-            
-            # # op[1]: new_A # op[2]: new_B
-            # for i_op, op in enumerate(inserted_operators):
-            #     _A, _B = op[1], op[2]
-            #     print(f"---------------- insert operator {i_op+1}/{len(inserted_operators)}")
-            #     print(f"_A shape: {_A.shape}, _B shape :{_B.shape} ")
-            #     for i in range(len(deleted_indices)):
-
-            #         col = np.delete(A[:,i],deleted_indices[i:])
-            #         row = np.delete(A[i],deleted_indices[i+1:])
-            #         print(f'col : {col} row: {row}')
-            #         _A = np.insert(_A, deleted_indices[i], col, axis=1)
-            #         _A = np.insert(_A, deleted_indices[i], row, axis=0)
-            #         _B = np.insert(_B, deleted_indices[i], col, axis=1)
-            #         _B = np.insert(_B, deleted_indices[i], row, axis=0)
-            #         inserted_operators[i_op][1] = _A
-            #         inserted_operators[i_op][2] = _B
-
-            # operators += inserted_operators
-
+            operators += score_valid_insert_operators(x, y, A, B, action, GaussObsL0Pen(data), debug=max(0, debug - 1))
+        
         scores = [op[0] for op in operators]
         for i in range(len(scores)):
             if math.isnan(scores[i]):

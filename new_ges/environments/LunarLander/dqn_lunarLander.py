@@ -20,17 +20,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import matplotlib.pyplot as plt
-import base64, io
 
 import numpy as np
 from collections import deque, namedtuple
 
-# For visualization
-from gym.wrappers.monitoring import video_recorder
-from IPython.display import HTML
-from IPython import display 
-import glob
 
 # ### Instantiate the Environment and Agent
 # 
@@ -264,6 +257,7 @@ def dqn(n_episodes=2000, max_t=1000, eps_start=1.0, eps_end=0.01, eps_decay=0.99
 # run the game        
 '''
 Action Space: size 4
+action index starts from 1 
 do nothing, fire left orientation engine, fire main engine, fire right orientation engine.
 
 Observation Space:state size 8 
@@ -282,13 +276,16 @@ def run_game(agent, env_name):
     total_rewards = 0
     while not done:     
         action = agent.act(state)
+        action_ = action
+        if(action == 0):
+            action_ = 5
         state_list = state.tolist()
-        list_before.append(state_list[0:6] + [total_rewards, action])
+        list_before.append(state_list[0:6] + [total_rewards, action_])
         state, reward, done, _ = env.step(action)  
         state_list = state.tolist() 
         total_rewards += reward
         # print(state)
-        list_after.append(state_list[0:6] + [total_rewards, action])
+        list_after.append(state_list[0:6] + [total_rewards, action_])
     print("finsihed")     
     env.close()
     return np.array(list_before), np.array(list_after)
@@ -324,7 +321,7 @@ sys.path.append("../..")
 from ges_algorithm import fit_bic
 from utils import is_dag
 
-agent = Agent(state_size=8, action_size=4, seed=0)
+# agent = Agent(state_size=8, action_size=4, seed=0)
 # CPDAG, action_matrix, score = get_game_CPDAG(9)
 # print(CPDAG)
 # list_before, list_after = run_game(agent, 'LunarLander-v2')

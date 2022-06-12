@@ -4,5 +4,6 @@ torch
 opencv-python
 tensorboardx
 pandas
+brew install swig
 gym[all]
 box2d-py

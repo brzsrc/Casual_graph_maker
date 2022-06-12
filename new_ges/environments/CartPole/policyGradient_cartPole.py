@@ -27,22 +27,14 @@ import torch.optim as optim
 from torch.distributions import Categorical
 torch.manual_seed(0)
 
-import base64, io
-
-# For visualization
-from gym.wrappers.monitoring import video_recorder
-from IPython.display import HTML
-from IPython import display 
-import glob
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-device
 
 # ### Instantiate the Environment and Agent
 # 
 # CartPole environment is very simple. It has discrete action space (2) and 4 dimensional state space. 
-env = gym.make('CartPole-v0')
-env.seed(0)
+env = gym.make('CartPole-v1')
+env.reset(seed=0)
 
 print('observation space:', env.observation_space)
 print('action space:', env.action_space)
