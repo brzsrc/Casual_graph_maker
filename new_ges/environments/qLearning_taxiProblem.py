@@ -97,6 +97,21 @@ for episode in range(total_episodes):
 rewards = []
 locs = [(0, 0), (0, 4), (4, 0), (4, 3)]
 
+'''
+actions = {
+    4: 'pickup passenger',
+    5: 'drop off passenger',
+    6: 'move',
+}
+
+features = {
+    0: 'taxi_loc',
+    1: 'pass_idx', 
+    2: 'dest_idx',
+    3: 'reward',
+}
+'''
+
 def run_game():
     env.reset()
     list_before = []
@@ -190,4 +205,4 @@ graph2,action2,score2 = CPDAG_combiner2.combine()
 print("Final", np.all(graph1==graph2))
 print(graph1,action1,score1)
 print("---------------------------")
-print(graph1,action1,score1)
+print(graph2,action2,score2)

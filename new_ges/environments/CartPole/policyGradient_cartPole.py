@@ -111,16 +111,6 @@ def training_agent(policy):
     optimizer = optim.Adam(policy.parameters(), lr=1e-2)
     scores = reinforce(policy, optimizer, n_episodes=2000)
 
-### Plot the learning progress
-# plot the scores
-# fig = plt.figure()
-# ax = fig.add_subplot(111)
-# plt.plot(np.arange(1, len(scores)+1), scores)
-# plt.ylabel('Score')
-# plt.xlabel('Episode #')
-# plt.show()
-
-
 # run game
 '''
 action sapce:
@@ -181,6 +171,7 @@ from DAG_maker import combine_CPDAG
 
 size = 5
 CPDAG_combiner = combine_CPDAG(size)
+CPDAG_combiner2 = combine_CPDAG(size)
 
 policy = Policy().to(device)
 training_agent(policy)
@@ -196,7 +187,15 @@ while cnt < 100:
         continue
     cnt+=1
     CPDAG_combiner.add_CPDAG(CPDAG, action_matrix, score)
+    CPDAG_combiner2.add_CPDAG(CPDAG, action_matrix, score, include_undirected=False)
 
 CPDAG_combiner.combine()
+CPDAG_combiner2.combine()
 
+graph1,action1,score1 = CPDAG_combiner.combine()    
+graph2,action2,score2 = CPDAG_combiner2.combine()    
 
+print("Final", np.all(graph1==graph2))
+print(graph1,action1,score1)
+print("---------------------------")
+print(graph2,action2,score2)

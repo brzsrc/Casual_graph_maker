@@ -60,7 +60,7 @@ class combine_CPDAG:
 
         print('----------------- now thresholding       -------------------')
         m = np.max(mult_score)
-        threshold = 0.01
+        threshold = 0.6
         mult_score /= m
         mult_score[mult_score < threshold] = 0
         mult_graph[mult_score < threshold] = 0

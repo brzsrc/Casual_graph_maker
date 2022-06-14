@@ -251,9 +251,6 @@ def dqn(n_episodes=2000, max_t=1000, eps_start=1.0, eps_end=0.01, eps_decay=0.99
             break
     return scores
 
-# agent = Agent(state_size=8, action_size=4, seed=0)
-# scores = dqn()
-
 # run the game        
 '''
 Action Space: size 4
@@ -280,13 +277,19 @@ def run_game(agent, env_name):
         if(action == 0):
             action_ = 5
         state_list = state.tolist()
+        # landed = 0
+        # if(state_list[6] and state_list[7]):
+        #     landed = 1
         list_before.append(state_list[0:6] + [total_rewards, action_])
         state, reward, done, _ = env.step(action)  
         state_list = state.tolist() 
         total_rewards += reward
+        # landed = 0
+        # if(state_list[6] and state_list[7]):
+        #     landed = 1
         # print(state)
         list_after.append(state_list[0:6] + [total_rewards, action_])
-    print("finsihed")     
+    # print("finsihed")     
     env.close()
     return np.array(list_before), np.array(list_after)
 
@@ -319,26 +322,16 @@ def get_game_CPDAG(size):
 import sys
 sys.path.append("../..")
 from ges_algorithm import fit_bic
-from utils import is_dag
-
-# agent = Agent(state_size=8, action_size=4, seed=0)
-# CPDAG, action_matrix, score = get_game_CPDAG(9)
-# print(CPDAG)
-# list_before, list_after = run_game(agent, 'LunarLander-v2')
-# print(list_before)
-# print(list_after)
-
-
 
 from DAG_maker import combine_CPDAG
 
-size = 7
+size = 8
 CPDAG_combiner = combine_CPDAG(size)
 CPDAG_combiner2 = combine_CPDAG(size)
 
 cnt = 0 
 while cnt < 100:
-    print(cnt)
+    # print(cnt)
     CPDAG, action_matrix, score = get_game_CPDAG(size)
     if not all(action_matrix[CPDAG > 0] > 0):
         print('------------awwwwwwww------------')
@@ -349,9 +342,10 @@ while cnt < 100:
     CPDAG_combiner.add_CPDAG(CPDAG, action_matrix, score)
     CPDAG_combiner2.add_CPDAG(CPDAG, action_matrix, score, include_undirected=False)
     
-a,_,g1 = CPDAG_combiner.combine()    
-b,_,g2 = CPDAG_combiner2.combine()    
+graph1,action1,score1 = CPDAG_combiner.combine()    
+# graph2,action2,score2 = CPDAG_combiner2.combine()    
 
-print("Final", np.all(a==b))
-print(g1)
-print(g2)
+# print("Final", np.all(graph1==graph2))
+print(graph1,action1,score1)
+# print("---------------------------")
+# print(graph2,action2,score2)
